@@ -48,6 +48,12 @@ btnJoin.addEventListener('click', () => {
 
     webSocket.addEventListener('open', (e) => {
         console.log('Connection Opened!');
+
+        var jsonStr = JSON.stringify({
+            'message': 'This is a message',
+        });
+
+        webSocket.send(jsonStr);
     } );
     webSocket.addEventListener('message', webSocketOnMessage);
     webSocket.addEventListener('close',(e) => {
