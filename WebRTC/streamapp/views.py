@@ -5,4 +5,5 @@ from django.shortcuts import render
 def main_view(request):
     context = {}
 
+    # Return base.html page
     return render(request, 'streamapp/base.html', context=context)
