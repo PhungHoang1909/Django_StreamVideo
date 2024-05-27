@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming</title>
+</head>
+<body>
+    <h1>Video Streaming</h1>
+    <div>
+        <h2>MP4 Video</h2>
+        <img src="{% url 'video_feed' '1' %}" width="640" height="480">
+    </div>
+    <div>
+        <h2>RTSP Stream 1</h2>
+        <img src="{% url 'video_feed' '2' %}" width="640" height="480">
+    </div>
+    <div>
+        <h2>RTSP Stream 2</h2>
+        <img src="{% url 'video_feed' '3' %}" width="640" height="480">
+    </div>
+</body>
+</html>
