@@ -1,7 +1,3 @@
-''' Youtube Channel : Asim Code  
-View RTSP Stream from IP Camera, Live video streaming over the network with OpenCV in Python
-https://youtu.be/ZBRqWPE-_yM
-'''
 import cv2
 import imutils
 from imutils.video import VideoStream
