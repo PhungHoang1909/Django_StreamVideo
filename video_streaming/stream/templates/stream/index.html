@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Streaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Video Streaming</h1>
-    <div>
-        <h2>MP4 Video</h2>
-        <img src="{% url 'video_feed' '1' %}" width="640" height="480">
-    </div>
-    <div>
-        <h2>RTSP Stream 1</h2>
-        <img src="{% url 'video_feed' '2' %}" width="640" height="480">
-    </div>
-    <div>
-        <h2>RTSP Stream 2</h2>
-        <img src="{% url 'video_feed' '3' %}" width="640" height="480">
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Video Streaming</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for url in urls %}
+            <div class="bg-white rounded-lg shadow-lg p-4">
+                <h2 class="text-xl font-semibold mb-4">Stream {{ forloop.counter }}</h2>
+                <div class="relative pb-9/16">
+                    <img src="{% url 'video_feed' forloop.counter0 %}" class="w-full h-auto rounded-lg" alt="Stream {{ forloop.counter }}">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

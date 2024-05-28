@@ -1,7 +1,7 @@
 import cv2
 import imutils
 from imutils.video import VideoStream
-rtsp_url = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_175k.mov"
+rtsp_url = "rtsp://rtspstream:61101fa39bb5a8c8b0994797aade10e7@zephyr.rtsp.stream/movie"
 video_stream = VideoStream(rtsp_url).start()
 
 while True:
@@ -9,7 +9,7 @@ while True:
     if frame is None:
         continue
 
-    frame = imutils.resize(frame,width=1200)
+    frame = imutils.resize(frame,width=400)
     cv2.imshow('AsimCodeCam', frame)
     key = cv2.waitKey(1) & 0xFF
     if key == ord('q'):
