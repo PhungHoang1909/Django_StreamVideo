@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
 from django.http import HttpResponse
+import threading
 
 # Load environment variables from .env file
 load_dotenv()
@@ -12,7 +13,7 @@ load_dotenv()
 # List of video URLs from environment variables
 video_urls = [
     r"D:\Study\Internship\DjangoStreamVideo\video_streaming\video.mp4",
-    os.getenv('RTSP_URL_1'),
+    # os.getenv('RTSP_URL_1'),
     os.getenv('RTSP_URL_2')
 ]
 
@@ -21,12 +22,16 @@ capture_dict = {}
 
 def init_captures():
     for idx, url in enumerate(video_urls):
-        if url:  # Ensure the URL is not None
-            capture_dict[str(idx)] = cv2.VideoCapture(url, cv2.CAP_FFMPEG)
-            capture_dict[str(idx)].set(cv2.CAP_PROP_BUFFERSIZE, 2)
+        if url:  
+            capture = cv2.VideoCapture(url, cv2.CAP_FFMPEG)
+            capture.set(cv2.CAP_PROP_BUFFERSIZE, 2)
+            capture.set(cv2.CAP_PROP_FPS, 30)  # Set frame rate to 30 FPS
+            capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            capture_dict[str(idx)] = capture
 
 def gen_frames(capture, url):
-    retry_delay = 0.5  # Delay in seconds before retrying to reconnect
+    retry_delay = 0.5  
     while True:
         success, frame = capture.read()
         if not success:
@@ -36,10 +41,12 @@ def gen_frames(capture, url):
             capture.open(url)
             continue
         ret, buffer = cv2.imencode('.jpg', frame)
+        if not ret:
+            continue
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        time.sleep(0.03)  # Adding a short sleep interval to smoothen the stream
+        time.sleep(0.03)  
 
 def stream_video(request, url_id):
     url = video_urls[int(url_id)]
@@ -53,5 +60,4 @@ def stream_video(request, url_id):
 def index(request):
     return render(request, 'stream/index.html', {'urls': video_urls})
 
-# Initialize capture objects on startup
 init_captures()
