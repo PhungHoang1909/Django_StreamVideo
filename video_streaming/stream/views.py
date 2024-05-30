@@ -12,9 +12,10 @@ load_dotenv()
 
 # List of video URLs from environment variables
 video_urls = [
-    r"D:\Study\Internship\DjangoStreamVideo\video_streaming\video.mp4",
-    # os.getenv('RTSP_URL_1'),
-    os.getenv('RTSP_URL_2')
+    # r"D:\Study\Internship\DjangoStreamVideo\video_streaming\video.mp4",
+    os.getenv('RTSP_URL_1'),
+    # os.getenv('RTSP_URL_2'),
+    # os.getenv('RTSP_URL_3'),
 ]
 
 # A dictionary to hold the capture objects for each URL
