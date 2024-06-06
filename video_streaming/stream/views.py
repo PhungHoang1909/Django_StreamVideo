@@ -12,15 +12,16 @@ load_dotenv()
 
 # List of video URLs from environment variables
 video_urls = [
-    # r"D:\Study\Internship\DjangoStreamVideo\video_streaming\video.mp4",
+    r"D:\Study\Internship\DjangoStreamVideo\video_streaming\video.mp4",
     os.getenv('RTSP_URL_1'),
-    # os.getenv('RTSP_URL_2'),
+    os.getenv('RTSP_URL_2'),
     # os.getenv('RTSP_URL_3'),
 ]
 
 # A dictionary to hold the capture objects for each URL
 capture_dict = {}
 
+# Capture each RTSP URLs and config: Size, FPS, buffersize
 def init_captures():
     for idx, url in enumerate(video_urls):
         if url:  
@@ -31,6 +32,7 @@ def init_captures():
             capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             capture_dict[str(idx)] = capture
 
+# Read frame and convert it to jpeg and yield each frame to browser
 def gen_frames(capture, url):
     retry_delay = 0.5  
     while True:
@@ -49,6 +51,7 @@ def gen_frames(capture, url):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         time.sleep(0.03)  
 
+# Stream video to browser
 def stream_video(request, url_id):
     url = video_urls[int(url_id)]
     if url_id not in capture_dict:
@@ -61,4 +64,4 @@ def stream_video(request, url_id):
 def index(request):
     return render(request, 'stream/index.html', {'urls': video_urls})
 
-init_captures()
+init_captures() # Khởi tạo các đối tượng capture ngay khi module được load.
