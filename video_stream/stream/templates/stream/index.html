@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RTSP Stream</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body>
+    <div>
+        <input id="stream_url" value="rtsp://<your-camera-ip-or-url>/path" size="36">
+        <button id="set_new_url">Set</button>
+    </div>
+    <video id="test_video" controls autoplay></video>
+    <script src="{% static 'stream/streamedian.min.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var socket = new WebSocket('ws://' + window.location.host + '/ws/stream/');
+            socket.onmessage = function(e) {
+                var data = JSON.parse(e.data);
+                console.log(data.message);
+            };
+
+            var playerOptions = {
+                socket: "ws://" + window.location.host + "/ws/stream/",
+                bufferDuration: 30,
+            };
+            var player = Streamedian.player('test_video', playerOptions);
+            document.getElementById('set_new_url').onclick = function() {
+                player.destroy();
+                player = Streamedian.player('test_video', Object.assign(playerOptions, {src: document.getElementById('stream_url').value}));
+            };
+        });
+    </script>
+</body>
+</html>
