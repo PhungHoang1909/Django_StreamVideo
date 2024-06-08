@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Stream</title>
+</head>
+<body>
+    <h1>RTSP Stream</h1>
+    <video id="videoPlayer" controls autoplay></video>
+    <script src="{% static 'stream/streamedian.min.js' %}"></script>
+    <script src="{% static 'stream/test.js' %}"></script>
+    <script>
+        var video = document.getElementById('videoPlayer');
+        var ws = new WebSocket('ws://127.0.0.1:8000/ws/stream/');
+        ws.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+        };
+    </script>
+</body>
+</html>

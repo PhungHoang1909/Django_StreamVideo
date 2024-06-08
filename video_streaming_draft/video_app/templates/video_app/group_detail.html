@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ group.name }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <h1>{{ group.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="url" name="rtsp_url" placeholder="RTSP URL">
+        <button type="submit">Add Stream</button>
+    </form>    
+    <ul>
+        {% for stream in group.streams.all %}
+        <li>
+            {{ stream.rtsp_url }}
+            <form method="post" action="{% url 'delete_stream' stream.pk %}">
+                {% csrf_token %}
+                <button type="submit">Remove</button>
+            </form>
+            <div>
+                <video id="video_{{ stream.id }}" controls></video>
+<script>
+    var video = document.getElementById('video_{{ stream.id }}');
+    if (Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource('/static/streams/{{ group.id }}/index.m3u8');
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            video.play();
+        });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = '/static/streams/{{ group.id }}/index.m3u8';
+        video.addEventListener('loadedmetadata', function() {
+            video.play();
+        });
+    }
+</script>
+
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const groupName = "{{ group.name }}";
+            const ws = new WebSocket(`ws://${window.location.host}/ws/video/${groupName}/`);
+        
+            ws.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                const message = data['message'];
+                location.reload();
+            };
+        
+            ws.onclose = function(e) {
+                console.error('WebSocket closed unexpectedly');
+            };
+        
+            function sendMessage(message) {
+                ws.send(JSON.stringify({'message': message}));
+            }
+        });        
+    </script>
+</body>
+</html>

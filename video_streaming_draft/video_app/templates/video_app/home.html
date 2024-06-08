@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Groups</title>
+</head>
+<body>
+    <h1>Video Groups</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="New group name">
+        <button type="submit">Add Group</button>
+    </form>
+    
+    <ul>
+        {% for group in groups %}
+        <li><a href="{% url 'group_detail' group.pk %}">{{ group.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
